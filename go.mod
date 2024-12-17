@@ -1,4 +1,4 @@
-module main
+module github.com/DaHuangQwQ/web
 
 go 1.22.0
 

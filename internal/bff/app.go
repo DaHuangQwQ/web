@@ -2,13 +2,14 @@ package bff
 
 import (
 	"context"
-	"main/internal/bff/web"
 	"strings"
 	"time"
 
-	"github.com/DaHuangQwQ/gpkg/ginx"
 	"github.com/DaHuangQwQ/gpkg/ginx/jwt"
 	"github.com/DaHuangQwQ/gpkg/ginx/middleware/jwt_token"
+	"github.com/DaHuangQwQ/web/internal/bff/web"
+
+	"github.com/DaHuangQwQ/gpkg/ginx"
 	prometheusx "github.com/DaHuangQwQ/gpkg/ginx/middleware/prometheus"
 	"github.com/DaHuangQwQ/gpkg/ginx/middleware/ratelimit"
 	"github.com/DaHuangQwQ/gpkg/logger"
@@ -24,16 +25,10 @@ type App struct {
 	Server *ginx.Server
 }
 
-func initServer() []web.Handler {
-	return []web.Handler{
-		web.NewUserHandler(),
-	}
-}
-
 func initGinServer(
 	redisClient redis.Cmdable,
 	l logger.Logger,
-	webHandler ...web.Handler,
+	userHandler *web.UserHandler,
 ) *ginx.Server {
 	pb := &prometheusx.Builder{
 		Namespace: "DaHuang",
@@ -50,11 +45,10 @@ func initGinServer(
 		otelgin.Middleware("webook"),
 		ratelimit.NewBuilder(ratelimiter.NewRedisSlidingWindowLimiter(redisClient, time.Second, 10), l).Build(),
 		jwt_token.NewBuilder(jwt.NewRedisJWTHandler([]byte("moyn8y9abnd7q4zkq2m73yw8tu9j5ixm"),
-			[]byte("moyn8y9abnd7q4zkq2m73yw8tu9j5ixA"), time.Hour*24, redisClient)).Build())
+			[]byte("moyn8y9abnd7q4zkq2m73yw8tu9j5ixA"), time.Hour*24, redisClient)).Build(),
+	)
 
-	for _, h := range webHandler {
-		h.RegisterRoutes(engine)
-	}
+	userHandler.RegisterRoutes(engine)
 
 	ginx.InitCounter(prometheus.CounterOpts{
 		Namespace: "daming_geektime",

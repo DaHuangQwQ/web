@@ -7,9 +7,9 @@
 package ioc
 
 import (
-	"main/internal/bff"
-	"main/ioc/third"
-
+	"github.com/DaHuangQwQ/web/internal/bff"
+	"github.com/DaHuangQwQ/web/internal/user"
+	"github.com/DaHuangQwQ/web/ioc/third"
 	"github.com/google/wire"
 )
 
@@ -18,8 +18,9 @@ import (
 func InitApp() *App {
 	logger := third.InitLogger()
 	cmdable := third.InitRedis()
-	app := bff.InitBff(logger, cmdable)
-	server := app.Server
+	app := user.InitApp()
+	bffApp := bff.InitApp(logger, cmdable, app)
+	server := bffApp.Server
 	iocApp := &App{
 		Server: server,
 	}

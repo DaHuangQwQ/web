@@ -3,8 +3,9 @@
 package ioc
 
 import (
-	"main/internal/bff"
-	"main/ioc/third"
+	"github.com/DaHuangQwQ/web/internal/bff"
+	"github.com/DaHuangQwQ/web/internal/user"
+	"github.com/DaHuangQwQ/web/ioc/third"
 
 	"github.com/google/wire"
 )
@@ -18,8 +19,10 @@ func InitApp() *App {
 	wire.Build(
 		thirdSet,
 
-		bff.InitBff,
+		bff.InitApp,
 		wire.FieldsOf(new(*bff.App), "Server"),
+
+		user.InitApp,
 
 		wire.Struct(new(App), "*"),
 	)

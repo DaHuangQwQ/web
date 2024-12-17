@@ -8,14 +8,16 @@ package bff
 
 import (
 	"github.com/DaHuangQwQ/gpkg/logger"
+	"github.com/DaHuangQwQ/web/internal/bff/web"
+	"github.com/DaHuangQwQ/web/internal/user"
 	"github.com/redis/go-redis/v9"
 )
 
 // Injectors from wire.go:
 
-func InitBff(l logger.Logger, redisClient redis.Cmdable) *App {
-	v := initServer()
-	server := initGinServer(redisClient, l, v...)
+func InitApp(l logger.Logger, redisClient redis.Cmdable, userService *user.App) *App {
+	userHandler := web.NewUserHandler(userService)
+	server := initGinServer(redisClient, l, userHandler)
 	app := &App{
 		Server: server,
 	}

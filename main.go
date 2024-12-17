@@ -1,7 +1,7 @@
 package main
 
 import (
-	"main/ioc"
+	"github.com/DaHuangQwQ/web/ioc"
 
 	"github.com/spf13/viper"
 )
