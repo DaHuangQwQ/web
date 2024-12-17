@@ -1,3 +1,13 @@
+WIRE := $(shell find . -name 'wire.go')
+
+.PHONY: wire
+wire:
+	@for file in $(WIRE); do \
+		dir=$$(dirname $$file); \
+		echo "Running 'wire' in directory $$dir"; \
+		(cd $$dir && wire); \
+	done
+
 .PHONY: setup
 setup:
 	@sh ./.script/setup.sh
