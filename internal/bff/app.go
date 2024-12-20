@@ -51,7 +51,7 @@ func initGinServer(
 	userHandler.RegisterRoutes(engine)
 
 	ginx.InitCounter(prometheus.CounterOpts{
-		Namespace: "daming_geektime",
+		Namespace: "dahuang",
 		Subsystem: "webook_bff",
 		Name:      "http",
 	})
